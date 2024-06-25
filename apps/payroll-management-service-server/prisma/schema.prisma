@@ -1,0 +1,56 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Department {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  name        String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Payroll {
+  amount    Float?
+  createdAt DateTime  @default(now())
+  id        String    @id @default(cuid())
+  payDate   DateTime?
+  updatedAt DateTime  @updatedAt
+  user      User?     @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+model Salary {
+  baseSalary Float?
+  bonus      Float?
+  createdAt  DateTime @default(now())
+  id         String   @id @default(cuid())
+  updatedAt  DateTime @updatedAt
+  user       User?    @relation(fields: [userId], references: [id])
+  userId     String?
+}
+
+model User {
+  createdAt DateTime      @default(now())
+  email     String?       @unique
+  firstName String?
+  fullName  String?
+  id        String        @id @default(cuid())
+  lastName  String?
+  password  String
+  payrolls  Payroll[]
+  role      EnumUserRole?
+  roles     Json
+  salaries  Salary[]
+  updatedAt DateTime      @updatedAt
+  username  String        @unique
+}
+
+enum EnumUserRole {
+  Option1
+}
